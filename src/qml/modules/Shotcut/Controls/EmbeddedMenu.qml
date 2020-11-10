@@ -25,32 +25,23 @@ Rectangle {
     property int itemCount: 0 // should be provided by user
     property int itemHeight: 26
 
-    function visible() {
-        return menu.state === 'visible'
-    }
-
     function show(x, y) {
-        menu.x = Math.min(x, parent.width - menu.width)
-        menu.y = Math.min(y, parent.height - menu.height)
-        if (!visible())
-            menu.state = 'visible'
+        menu.x = Math.max(0, Math.min(x, parent.width - menu.width))
+        menu.y = Math.max(0, Math.min(y, parent.height - menu.height))
+        if (!visible)
+            visible = true
     }
 
     function hide() {
-        menu.state = 'invisible'
-        menu.opacity = 0
+        visible = false
     }
 
     id: menu
     width: 100
     height: itemCount * itemHeight
     color: 'transparent'
-    opacity: 0
-    states: [
-        State { name: 'invisible'; PropertyChanges { target: menu; opacity: 0; z: 0} },
-        State { name: 'visible'; PropertyChanges { target: menu; opacity: 1; z: 10} }
-    ]
-    state: 'invisible'
+    visible: false
+    z: visible? 10 : 0
 
     SystemPalette { id: activePalette }
     Rectangle {
@@ -58,7 +49,7 @@ Rectangle {
         anchors.fill: parent
         color: activePalette.base
         border.color: '#333'
-        border.width: application.OS === 'Windows'? 1 : 0
+        border.width: application.OS !== 'OS X'? 1 : 0
     }
     DropShadow {
         source: background

@@ -450,11 +450,11 @@ Rectangle {
     Shotcut.EmbeddedMenu {
         id: menu
         width: 250
+        itemCount: menuLayout.children.length
 
         ColumnLayout {
             id: menuLayout
             anchors.fill: parent
-            anchors.margins: 0
             spacing: 0
 
             Shotcut.CheckableMenuItem {

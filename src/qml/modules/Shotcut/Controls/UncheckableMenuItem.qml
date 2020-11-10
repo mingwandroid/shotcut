@@ -25,18 +25,19 @@ CheckBox {
 
     style: CheckBoxStyle {
         background: Rectangle {
-            implicitHeight: menu.itemHeight
             implicitWidth: menu.width
+            implicitHeight: menu.itemHeight
             color: control.hovered? activePalette.highlight : 'transparent'
         }
         label: Label {
+            x: 6
             Layout.alignment: Qt.AlignLeft
             text: control.text
             color: control.hovered? activePalette.highlightedText : activePalette.text
         }
-        indicator: Rectangle {
-            color: 'transparent'
-            implicitWidth: 18
+        indicator: CheckBox {
+            x: 8
+            visible: false
         }
     }
 }

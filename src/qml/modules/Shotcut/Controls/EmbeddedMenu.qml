@@ -22,6 +22,7 @@ import QtQuick.Layouts 1.1
 import QtGraphicalEffects 1.0
 
 Rectangle {
+    property int itemCount: 0 // should be provided by user
     property int itemHeight: 26
 
     function visible() {
@@ -42,7 +43,7 @@ Rectangle {
 
     id: menu
     width: 100
-    height: menuLayout.children.length * itemHeight
+    height: itemCount * itemHeight
     color: 'transparent'
     opacity: 0
     states: [
@@ -56,12 +57,14 @@ Rectangle {
         id: background
         anchors.fill: parent
         color: activePalette.base
+        border.color: '#333'
+        border.width: application.OS === 'Windows'? 1 : 0
     }
-
     DropShadow {
         source: background
         anchors.fill: background
         opacity: menu.opacity
+        visible: application.OS !== 'Windows'
         horizontalOffset: 3
         verticalOffset: 3
         radius: 8

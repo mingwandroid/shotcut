@@ -121,7 +121,16 @@ Item {
             minimum: parameterRoot.minimum
             maximum: parameterRoot.maximum
             parameterIndex: parameterRoot.DelegateModel.itemsIndex
-            onClicked: parameterRoot.clicked(keyframe, parameterRoot)
+            onClicked: {
+                parameterRoot.clicked(keyframe, parameterRoot)
+                if (mouse.button === Qt.RightButton) {
+                    keyframeMenu.parameterIndex = parameterIndex
+                    keyframeMenu.index = index
+                    keyframeMenu.interpolation = interpolation
+                    var mapped = mapToItem(root, mouse.x, mouse.y)
+                    keyframeMenu.visible? keyframeMenu.hide() : keyframeMenu.show(mapped.x, mapped.y)
+                }
+            }
             onInterpolationChanged: canvas.requestPaint()
             onPositionChanged: canvas.requestPaint()
             onValueChanged: canvas.requestPaint()

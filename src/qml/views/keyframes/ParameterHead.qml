@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017-2019 Meltytech, LLC
+ * Copyright (c) 2017-2020 Meltytech, LLC
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -76,8 +76,10 @@ Rectangle {
         acceptedButtons: Qt.LeftButton | Qt.RightButton
         onClicked: {
             parent.clicked()
-            if (mouse.button == Qt.RightButton)
-                menu.popup()
+            if (mouse.button === Qt.RightButton) {
+                var mapped = mapToItem(root, mouse.x, mouse.y)
+                menu.show(mapped.x, mapped.y)
+            }
         }
     }
     Flow {

@@ -24,7 +24,7 @@ ToolBar {
 
     SystemPalette { id: activePalette }
 
-    id: root
+    id: toolBarRoot
     width: 200
     height: settings.smallIcons? 28 : menuButton.height + 4
     anchors.margins: 0
@@ -43,7 +43,7 @@ ToolBar {
                 tooltip: qsTr('Display a menu of additional actions')
                 iconName: 'show-menu'
                 iconSource: 'qrc:///icons/oxygen/32x32/actions/show-menu.png'
-                onTriggered: menu.show(menuButton.width / 2, root.height / 2)
+                onTriggered: menu.show(menuButton.width / 2, toolBarRoot.height / 2)
             }
         }
         Button { // separator

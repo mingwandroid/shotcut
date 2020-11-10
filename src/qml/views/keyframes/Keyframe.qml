@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018-2019 Meltytech, LLC
+ * Copyright (c) 2018-2020 Meltytech, LLC
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,7 +25,7 @@ import 'Keyframes.js' as Logic
 Rectangle {
     id: keyframeRoot
     property int position: 0
-    property int interpolation: KeyframesModel.DiscreteInterpolation // rectangle for discrete
+    property int interpolation: KeyframesModel.LinearInterpolation
     property bool isSelected: false
     property string name: ''
     property double value
@@ -40,7 +40,8 @@ Rectangle {
     property double minDragY: activeClip.y - width/2
     property double maxDragY: activeClip.y + activeClip.height - width/2
 
-    signal clicked(var keyframe)
+    signal clicked(var keyframe, var mouse)
+    signal otherClicked()
 
     SystemPalette { id: activePalette }
 
@@ -58,16 +59,13 @@ Rectangle {
     MouseArea {
         anchors.fill: parent
         acceptedButtons: Qt.RightButton
-        onClicked: {
-            parent.clicked(keyframeRoot)
-            menu.popup()
-        }
+        onClicked: parent.clicked(keyframeRoot, mouse)
     }
     MouseArea {
         anchors.fill: parent
         acceptedButtons: Qt.LeftButton
         onClicked: producer.position = position
-        onDoubleClicked: removeMenuItem.trigger()
+        onDoubleClicked: removeMenuItem.remove(parameterIndex, index)
         drag {
             target: parent
             axis: isCurve? Drag.XAndYAxis : Drag.XAxis
@@ -78,7 +76,7 @@ Rectangle {
             maximumY: maxDragY
         }
         onPressed: {
-            parent.clicked(keyframeRoot)
+            parent.clicked(keyframeRoot, mouse)
             if (isCurve) {
                if (mouse.modifiers & Qt.ControlModifier)
                    drag.axis = Drag.YAxis
@@ -106,52 +104,5 @@ Rectangle {
         id: tooltip
         text: name
         cursorShape: Qt.PointingHandCursor
-    }
-
-    Menu {
-        id: menu
-        Menu {
-            id: keyframeTypeSubmenu
-            title: qsTr('Keyframe Type')
-            ExclusiveGroup { id: keyframeTypeGroup }
-            MenuItem {
-                text: qsTr('Discrete')
-                checkable: true
-                checked: interpolation === KeyframesModel.DiscreteInterpolation
-                exclusiveGroup: keyframeTypeGroup
-                onTriggered: parameters.setInterpolation(parameterIndex, index, KeyframesModel.DiscreteInterpolation)
-            }
-            MenuItem {
-                text: qsTr('Linear')
-                checkable: true
-                checked: interpolation === KeyframesModel.LinearInterpolation
-                exclusiveGroup: keyframeTypeGroup
-                onTriggered: parameters.setInterpolation(parameterIndex, index, KeyframesModel.LinearInterpolation)
-            }
-            MenuItem {
-                text: qsTr('Smooth')
-                checkable: true
-                checked: interpolation === KeyframesModel.SmoothInterpolation
-                exclusiveGroup: keyframeTypeGroup
-                onTriggered: parameters.setInterpolation(parameterIndex, index, KeyframesModel.SmoothInterpolation)
-            }
-        }
-        MenuItem {
-            id: removeMenuItem
-            text: qsTr('Remove')
-            onTriggered: {
-                parameters.remove(parameterIndex, index)
-                root.selection = []
-            }
-        }
-        onPopupVisibleChanged: {
-            if (visible && application.OS !== 'OS X' && __popupGeometry.height > 0) {
-                // Try to fix menu running off screen. This only works intermittently.
-                menu.__yOffset = Math.min(0, Screen.height - (__popupGeometry.y + __popupGeometry.height + 40))
-                menu.__xOffset = Math.min(0, Screen.width - (__popupGeometry.x + __popupGeometry.width))
-            }
-        }
-        onAboutToShow: tooltip.isVisible = false
-        onAboutToHide: tooltip.isVisible = true
     }
 }

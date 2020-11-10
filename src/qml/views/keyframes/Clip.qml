@@ -17,7 +17,8 @@
 
 import QtQuick 2.2
 import QtQuick.Controls 1.0
-import Shotcut.Controls 1.0
+import Shotcut.Controls 1.0 as Shotcut
+import QtQuick.Layouts 1.1
 import QtGraphicalEffects 1.0
 import QtQml.Models 2.2
 import QtQuick.Window 2.2
@@ -50,6 +51,7 @@ Rectangle {
     signal trimmedIn(var clip)
     signal trimmingOut(var clip, real delta, var mouse)
     signal trimmedOut(var clip)
+    signal otherClicked()
 
     SystemPalette { id: activePalette }
     gradient: Gradient {
@@ -131,7 +133,7 @@ Rectangle {
         Repeater {
             id: waveformRepeater
             model: Math.ceil(waveform.innerWidth / waveform.maxWidth)
-            TimelineWaveform {
+            Shotcut.TimelineWaveform {
                 width: Math.min(waveform.innerWidth, waveform.maxWidth)
                 height: waveform.height
                 fillColor: getColor()
@@ -226,15 +228,22 @@ Rectangle {
 
     MouseArea {
         anchors.fill: parent
-        acceptedButtons: Qt.RightButton
+        acceptedButtons: Qt.LeftButton | Qt.RightButton
         propagateComposedEvents: true
         cursorShape: (trimInMouseArea.drag.active || trimOutMouseArea.drag.active)? Qt.SizeHorCursor :
             (animateInMouseArea.drag.active || animateOutMouseArea.drag.active)? Qt.PointingHandCursor :
             Qt.ArrowCursor
-        onClicked: menu.popup()
+        onClicked: {
+            if (mouse.button === Qt.RightButton) {
+                var mapped = mapToItem(root, mouse.x, mouse.y)
+                clipMenu.visible? clipMenu.hide() : clipMenu.show(mapped.x, mapped.y)
+            } else {
+                clipRoot.otherClicked()
+            }
+        }
     }
 
-    TimelineTriangle {
+    Shotcut.TimelineTriangle {
         id: animateInTriangle
         visible: !isBlank
         width: parent.animateIn * timeScale
@@ -277,6 +286,7 @@ Rectangle {
                 startX = parent.x
                 startFadeIn = animateIn
                 parent.anchors.left = undefined
+                clipRoot.otherClicked()
             }
             onReleased: {
                 root.stopScrolling = false
@@ -314,7 +324,7 @@ Rectangle {
         }
     }
 
-    TimelineTriangle {
+    Shotcut.TimelineTriangle {
         id: animateOutTriangle
         visible: !isBlank
         width: parent.animateOut * timeScale
@@ -357,6 +367,7 @@ Rectangle {
                 startX = parent.x
                 startFadeOut = animateOut
                 parent.anchors.right = undefined
+                clipRoot.otherClicked()
             }
             onReleased: {
                 root.stopScrolling = false
@@ -421,6 +432,7 @@ Rectangle {
                 startX = mapToItem(null, x, y).x
                 originalX = 0 // reusing originalX to accumulate delta for bubble help
                 parent.anchors.left = undefined
+                clipRoot.otherClicked()
             }
             onReleased: {
                 root.stopScrolling = false
@@ -468,6 +480,7 @@ Rectangle {
                 duration = clipDuration
                 originalX = 0 // reusing originalX to accumulate delta for bubble help
                 parent.anchors.right = undefined
+                clipRoot.otherClicked()
             }
             onReleased: {
                 root.stopScrolling = false
@@ -485,21 +498,6 @@ Rectangle {
                         duration = newDuration
                     }
                 }
-            }
-        }
-    }
-    Menu {
-        id: menu
-        MenuItem {
-            visible: !isBlank && settings.timelineShowWaveforms
-            text: qsTr('Rebuild Audio Waveform')
-            onTriggered: producer.remakeAudioLevels()
-        }
-        onPopupVisibleChanged: {
-            if (visible && application.OS !== 'OS X' && __popupGeometry.height > 0) {
-                // Try to fix menu running off screen. This only works intermittently.
-                menu.__yOffset = Math.min(0, Screen.height - (__popupGeometry.y + __popupGeometry.height + 40))
-                menu.__xOffset = Math.min(0, Screen.width - (__popupGeometry.x + __popupGeometry.width))
             }
         }
     }

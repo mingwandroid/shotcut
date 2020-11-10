@@ -18,11 +18,11 @@
 import QtQuick 2.5
 import QtQml.Models 2.1
 import QtQuick.Controls 1.3
-import QtQuick.Controls.Styles 1.4
 import QtQuick.Layouts 1.1
-import Shotcut.Controls 1.0 as Shotcut
+import Shotcut.Controls 1.0 as ShotcutControls
 import QtGraphicalEffects 1.0
 import QtQuick.Window 2.2
+import org.shotcut.qml 1.0 as Shotcut
 import 'Keyframes.js' as Logic
 
 Rectangle {
@@ -62,6 +62,12 @@ Rectangle {
         scrollView.flickableItem.contentX = Logic.clamp((targetX * timeScale / before) - offset, 0, Logic.scrollMax().x)
     }
 
+    function hideMenus() {
+        menu.hide()
+        clipMenu.hide()
+        keyframeMenu.hide()
+    }
+
     Timer {
         id: scrollZoomTimer
         interval: 100
@@ -94,8 +100,13 @@ Rectangle {
 
     MouseArea {
         anchors.fill: parent
-        acceptedButtons: Qt.RightButton
-        onClicked: menu.visible()? menu.hide() : menu.show(mouseX, mouseY)
+        acceptedButtons: Qt.LeftButton | Qt.RightButton
+        onClicked: {
+            hideMenus()
+            if (mouse.button === Qt.RightButton) {
+                menu.visible? menu.hide() : menu.show(mouse.x, mouse.y)
+            }
+        }
     }
 
     KeyframesToolbar {
@@ -135,6 +146,7 @@ Rectangle {
                         height: Logic.trackHeight(true)
                         selected: false
 //                        onIsLockedChanged: parametersRepeater.itemAt(index).isLocked = isLocked
+                        onClicked: hideMenus()
                     }
                     Repeater {
                         id: trackHeaderRepeater
@@ -149,6 +161,7 @@ Rectangle {
                             current: index === currentTrack
 //                            onIsLockedChanged: parametersRepeater.itemAt(index).isLocked = isLocked
                             onClicked: {
+                                hideMenus()
                                 currentTrack = index
                             }
                         }
@@ -176,7 +189,7 @@ Rectangle {
             onClicked: {
                 producer.position = (scrollView.flickableItem.contentX + mouse.x) / timeScale
                 bubbleHelp.hide()
-                menu.hide()
+                hideMenus()
             }
             onWheel: Logic.onMouseWheel(wheel)
             onDoubleClicked: {
@@ -219,7 +232,7 @@ Rectangle {
                 if (mouse.modifiers === (Qt.ShiftModifier | Qt.AltModifier) || mouse.buttons === Qt.LeftButton) {
                     producer.position = (scrollView.flickableItem.contentX + mouse.x) / timeScale
                     bubbleHelp.hide()
-                    menu.hide()
+                    hideMenus()
                     scim = true
                 }
                 else
@@ -309,6 +322,7 @@ Rectangle {
                                         hash: producer.hash
                                         speed: producer.speed
                                         outThumbnailVisible: false
+                                        onOtherClicked: hideMenus()
                                     }
                                     Clip {
                                         id: activeClip
@@ -350,6 +364,7 @@ Rectangle {
                                             }
                                         }
                                         onTrimmedOut: bubbleHelp.hide()
+                                        onOtherClicked: hideMenus()
                                     }
                                     Clip {
                                         id: afterClip
@@ -364,6 +379,7 @@ Rectangle {
                                         hash: producer.hash
                                         speed: producer.speed
                                         inThumbnailVisible: false
+                                        onOtherClicked: hideMenus()
                                     }
                                 }
                             }
@@ -383,7 +399,7 @@ Rectangle {
                 x: producer.position * timeScale - scrollView.flickableItem.contentX
                 y: 0
             }
-            Shotcut.TimelinePlayhead {
+            ShotcutControls.TimelinePlayhead {
                 id: playhead
                 visible: producer.position > -1 && metadata !== null
                 x: producer.position * timeScale - scrollView.flickableItem.contentX - 5
@@ -447,17 +463,21 @@ Rectangle {
         fast: true
     }
 
-    Shotcut.EmbeddedMenu {
+    ShotcutControls.EmbeddedMenu {
         id: menu
-        width: 250
+        width: 220
         itemCount: menuLayout.children.length
+        onVisibleChanged: {
+            clipMenu.hide()
+            keyframeMenu.hide()
+        }
 
         ColumnLayout {
             id: menuLayout
             anchors.fill: parent
             spacing: 0
 
-            Shotcut.CheckableMenuItem {
+            ShotcutControls.CheckableMenuItem {
                 text: qsTr('Show Audio Waveforms')
                 checked: settings.timelineShowWaveforms
                 onClicked: {
@@ -475,7 +495,7 @@ Rectangle {
                     menu.hide()
                 }
             }
-            Shotcut.CheckableMenuItem {
+            ShotcutControls.CheckableMenuItem {
                 text: qsTr('Show Video Thumbnails')
                 checked: settings.timelineShowThumbnails
                 onClicked: {
@@ -483,7 +503,7 @@ Rectangle {
                     menu.hide()
                 }
             }
-            Shotcut.CheckableMenuItem {
+            ShotcutControls.CheckableMenuItem {
                 text: qsTr('Center the Playhead')
                 checked: settings.timelineCenterPlayhead
                 onClicked: {
@@ -491,7 +511,7 @@ Rectangle {
                     menu.hide()
                 }
             }
-            Shotcut.CheckableMenuItem {
+            ShotcutControls.CheckableMenuItem {
                 text: qsTr('Scroll to Playhead on Zoom')
                 checked: settings.timelineScrollZoom
                 onClicked: {
@@ -499,12 +519,105 @@ Rectangle {
                     menu.hide()
                 }
             }
-            Shotcut.UncheckableMenuItem {
+            ShotcutControls.UncheckableMenuItem {
                 text: qsTr('Reload')
                 onClicked: {
                     parameters.reload()
                     menu.hide()
                 }
+            }
+        }
+    }
+    ShotcutControls.EmbeddedMenu {
+        id: clipMenu
+        width: 220
+        itemCount: clipMenuLayout.children.length
+        onVisibleChanged: {
+            menu.hide()
+            keyframeMenu.hide()
+        }
+
+        ColumnLayout {
+            id: clipMenuLayout
+            anchors.fill: parent
+            spacing: 0
+
+            ShotcutControls.UncheckableMenuItem {
+                visible: !isBlank && settings.timelineShowWaveforms
+                text: qsTr('Rebuild Audio Waveform')
+                onClicked: producer.remakeAudioLevels()
+            }
+        }
+    }
+    ShotcutControls.EmbeddedMenu {
+        id: keyframeMenu
+        width: 220
+        itemCount: keyframeMenuLayout.children.length
+        onVisibleChanged: {
+            menu.hide()
+            clipMenu.hide()
+            if (visible) {
+                switch (interpolation) {
+                case Shotcut.KeyframesModel.DiscreteInterpolation:
+                    discreteMenuItem.checked = true
+                    break;
+                case Shotcut.KeyframesModel.LinearInterpolation:
+                    linearMenuItem.checked = true
+                    break;
+                case Shotcut.KeyframesModel.SmoothInterpolation:
+                    smoothMenuItem.checked = true
+                    break;
+                default:
+                    break;
+                }
+            }
+        }
+        property int parameterIndex
+        property int index
+        property int interpolation
+        ExclusiveGroup { id: keyframeTypeGroup }
+
+        ColumnLayout {
+            id: keyframeMenuLayout
+            anchors.fill: parent
+            spacing: 0
+
+            ShotcutControls.CheckableMenuItem {
+                id: discreteMenuItem
+                text: qsTr('Hold')
+                exclusiveGroup: keyframeTypeGroup
+                onClicked: {
+                    parameters.setInterpolation(keyframeMenu.parameterIndex, keyframeMenu.index, Shotcut.KeyframesModel.DiscreteInterpolation)
+                    keyframeMenu.hide()
+                }
+            }
+            ShotcutControls.CheckableMenuItem {
+                id: linearMenuItem
+                text: qsTr('Linear')
+                exclusiveGroup: keyframeTypeGroup
+                onClicked: {
+                    parameters.setInterpolation(keyframeMenu.parameterIndex, keyframeMenu.index, Shotcut.KeyframesModel.LinearInterpolation)
+                    keyframeMenu.hide()
+                }
+            }
+            ShotcutControls.CheckableMenuItem {
+                id: smoothMenuItem
+                text: qsTr('Smooth')
+                exclusiveGroup: keyframeTypeGroup
+                onClicked: {
+                    parameters.setInterpolation(keyframeMenu.parameterIndex, keyframeMenu.index, Shotcut.KeyframesModel.SmoothInterpolation)
+                    keyframeMenu.hide()
+                }
+            }
+            ShotcutControls.UncheckableMenuItem {
+                id: removeMenuItem
+                text: qsTr('Remove')
+                function remove(parameterIndex, index) {
+                    parameters.remove(parameterIndex, index)
+                    root.selection = []
+                    keyframeMenu.hide()
+                }
+                onClicked: remove(keyframeMenu.parameterIndex, keyframeMenu.index)
             }
         }
     }

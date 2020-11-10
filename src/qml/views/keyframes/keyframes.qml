@@ -18,7 +18,9 @@
 import QtQuick 2.5
 import QtQml.Models 2.1
 import QtQuick.Controls 1.3
-import Shotcut.Controls 1.0
+import QtQuick.Controls.Styles 1.4
+import QtQuick.Layouts 1.1
+import Shotcut.Controls 1.0 as Shotcut
 import QtGraphicalEffects 1.0
 import QtQuick.Window 2.2
 import 'Keyframes.js' as Logic
@@ -93,7 +95,7 @@ Rectangle {
     MouseArea {
         anchors.fill: parent
         acceptedButtons: Qt.RightButton
-        onClicked: menu.popup()
+        onClicked: menu.visible()? menu.hide() : menu.show(mouseX, mouseY)
     }
 
     KeyframesToolbar {
@@ -174,6 +176,7 @@ Rectangle {
             onClicked: {
                 producer.position = (scrollView.flickableItem.contentX + mouse.x) / timeScale
                 bubbleHelp.hide()
+                menu.hide()
             }
             onWheel: Logic.onMouseWheel(wheel)
             onDoubleClicked: {
@@ -216,6 +219,7 @@ Rectangle {
                 if (mouse.modifiers === (Qt.ShiftModifier | Qt.AltModifier) || mouse.buttons === Qt.LeftButton) {
                     producer.position = (scrollView.flickableItem.contentX + mouse.x) / timeScale
                     bubbleHelp.hide()
+                    menu.hide()
                     scim = true
                 }
                 else
@@ -379,7 +383,7 @@ Rectangle {
                 x: producer.position * timeScale - scrollView.flickableItem.contentX
                 y: 0
             }
-            TimelinePlayhead {
+            Shotcut.TimelinePlayhead {
                 id: playhead
                 visible: producer.position > -1 && metadata !== null
                 x: producer.position * timeScale - scrollView.flickableItem.contentX - 5
@@ -443,56 +447,64 @@ Rectangle {
         fast: true
     }
 
-    Menu {
+    Shotcut.EmbeddedMenu {
         id: menu
-        MenuItem {
-            text: qsTr('Show Audio Waveforms')
-            checkable: true
-            checked: settings.timelineShowWaveforms
-            onTriggered: {
-                if (checked) {
-                    if (settings.timelineShowWaveforms) {
-                        settings.timelineShowWaveforms = checked
-                        redrawWaveforms()
+        width: 250
+
+        ColumnLayout {
+            id: menuLayout
+            anchors.fill: parent
+            anchors.margins: 0
+            spacing: 0
+
+            Shotcut.CheckableMenuItem {
+                text: qsTr('Show Audio Waveforms')
+                checked: settings.timelineShowWaveforms
+                onClicked: {
+                    if (checked) {
+                        if (settings.timelineShowWaveforms) {
+                            settings.timelineShowWaveforms = checked
+                            redrawWaveforms()
+                        } else {
+                            settings.timelineShowWaveforms = checked
+                            producer.remakeAudioLevels()
+                        }
                     } else {
                         settings.timelineShowWaveforms = checked
-                        producer.remakeAudioLevels()
                     }
-                } else {
-                    settings.timelineShowWaveforms = checked
+                    menu.hide()
                 }
             }
-        }
-        MenuItem {
-            text: qsTr('Show Video Thumbnails')
-            checkable: true
-            checked: settings.timelineShowThumbnails
-            onTriggered: settings.timelineShowThumbnails = checked
-        }
-        MenuItem {
-            text: qsTr('Center the Playhead')
-            checkable: true
-            checked: settings.timelineCenterPlayhead
-            shortcut: 'Ctrl+Shift+P'
-            onTriggered: settings.timelineCenterPlayhead = checked
-        }
-        MenuItem {
-            text: qsTr('Scroll to Playhead on Zoom')
-            checkable: true
-            checked: settings.timelineScrollZoom
-            shortcut: 'Ctrl+Alt+P'
-            onTriggered: settings.timelineScrollZoom = checked
-        }
-        MenuSeparator {}
-        MenuItem {
-            text: qsTr('Reload')
-            onTriggered: parameters.reload()
-        }
-        onPopupVisibleChanged: {
-            if (visible && application.OS === 'Windows' && __popupGeometry.height > 0) {
-                // Try to fix menu running off screen. This only works intermittently.
-                menu.__yOffset = Math.min(0, Screen.height - (__popupGeometry.y + __popupGeometry.height + 40))
-                menu.__xOffset = Math.min(0, Screen.width - (__popupGeometry.x + __popupGeometry.width))
+            Shotcut.CheckableMenuItem {
+                text: qsTr('Show Video Thumbnails')
+                checked: settings.timelineShowThumbnails
+                onClicked: {
+                    settings.timelineShowThumbnails = checked
+                    menu.hide()
+                }
+            }
+            Shotcut.CheckableMenuItem {
+                text: qsTr('Center the Playhead')
+                checked: settings.timelineCenterPlayhead
+                onClicked: {
+                    settings.timelineCenterPlayhead = checked
+                    menu.hide()
+                }
+            }
+            Shotcut.CheckableMenuItem {
+                text: qsTr('Scroll to Playhead on Zoom')
+                checked: settings.timelineScrollZoom
+                onClicked: {
+                    settings.timelineScrollZoom = checked
+                    menu.hide()
+                }
+            }
+            Shotcut.UncheckableMenuItem {
+                text: qsTr('Reload')
+                onClicked: {
+                    parameters.reload()
+                    menu.hide()
+                }
             }
         }
     }

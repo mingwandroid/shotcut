@@ -16,3 +16,6 @@ ToggleButton 1.0 ToggleButton.qml
 VuiBase 1.0 VuiBase.qml
 KeyframableFilter 1.0 KeyframableFilter.qml
 ToolBarToggle 1.0 ToolBarToggle.qml
+EmbeddedMenu 1.0 EmbeddedMenu.qml
+CheckableMenuItem 1.0 CheckableMenuItem.qml
+UncheckableMenuItem 1.0 UncheckableMenuItem.qml

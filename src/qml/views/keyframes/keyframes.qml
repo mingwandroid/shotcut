@@ -584,7 +584,7 @@ Rectangle {
 
             ShotcutControls.CheckableMenuItem {
                 id: discreteMenuItem
-                text: qsTr('Hold')
+                text: qsTr('Keyframe Type: Hold')
                 exclusiveGroup: keyframeTypeGroup
                 onClicked: {
                     parameters.setInterpolation(keyframeMenu.parameterIndex, keyframeMenu.index, Shotcut.KeyframesModel.DiscreteInterpolation)
@@ -593,7 +593,7 @@ Rectangle {
             }
             ShotcutControls.CheckableMenuItem {
                 id: linearMenuItem
-                text: qsTr('Linear')
+                text: qsTr('Keyframe Type: Linear')
                 exclusiveGroup: keyframeTypeGroup
                 onClicked: {
                     parameters.setInterpolation(keyframeMenu.parameterIndex, keyframeMenu.index, Shotcut.KeyframesModel.LinearInterpolation)
@@ -602,7 +602,7 @@ Rectangle {
             }
             ShotcutControls.CheckableMenuItem {
                 id: smoothMenuItem
-                text: qsTr('Smooth')
+                text: qsTr('Keyframe Type: Smooth')
                 exclusiveGroup: keyframeTypeGroup
                 onClicked: {
                     parameters.setInterpolation(keyframeMenu.parameterIndex, keyframeMenu.index, Shotcut.KeyframesModel.SmoothInterpolation)

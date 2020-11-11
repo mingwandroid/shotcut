@@ -116,7 +116,13 @@ Rectangle {
                         Logic.seekPreviousSimple()
                     }
                 }
-                ToolTip.text: (delegateIndex >= 0) ? qsTr('Seek to previous keyframe') : qsTr('Seek backwards')
+                hoverEnabled: true
+                ToolTip {
+                    visible: parent.hovered
+                    delay: 1000
+                    timeout: 5000
+                    text: (delegateIndex >= 0) ? qsTr('Seek to previous keyframe') : qsTr('Seek backwards')
+                }
             }
 
             ToolButton {
@@ -130,7 +136,13 @@ Rectangle {
                     parameters.addKeyframe(delegateIndex, producer.position - (filter.in - producer.in))
                     root.selection = [parameters.keyframeIndex(delegateIndex, producer.position)]
                 }
-                ToolTip.text: qsTr('Add a keyframe at play head')
+                hoverEnabled: true
+                ToolTip {
+                    visible: parent.hovered
+                    delay: 1000
+                    timeout: 5000
+                    text: qsTr('Add a keyframe at play head')
+                }
             }
             Item {
                 visible: delegateIndex < 0 && paramHeadRoot.height >= 30
@@ -151,7 +163,13 @@ Rectangle {
                     parameters.remove(delegateIndex, root.selection[0])
                     root.selection = []
                 }
-                ToolTip.text: qsTr('Delete the selected keyframe')
+                hoverEnabled: true
+                ToolTip {
+                    visible: parent.hovered
+                    delay: 1000
+                    timeout: 5000
+                    text: qsTr('Delete the selected keyframe')
+                }
             }
             Item {
                 visible: delegateIndex < 0 && paramHeadRoot.height >= 30
@@ -173,7 +191,13 @@ Rectangle {
                         Logic.seekNextSimple()
                     }
                 }
-                ToolTip.text: (delegateIndex >= 0) ? qsTr('Seek to next keyframe') : qsTr('Seek forwards')
+                hoverEnabled: true
+                ToolTip {
+                    visible: parent.hovered
+                    delay: 1000
+                    timeout: 5000
+                    text: (delegateIndex >= 0) ? qsTr('Seek to next keyframe') : qsTr('Seek forwards')
+                }
             }
 
             ToolButton {
@@ -184,7 +208,12 @@ Rectangle {
                 icon.name: isLocked ? 'object-locked' : 'object-unlocked'
                 icon.source: isLocked ? 'qrc:///icons/oxygen/32x32/status/object-locked.png' : 'qrc:///icons/oxygen/32x32/status/object-unlocked.png'
 //                onClicked: timeline.setTrackLock(index, !isLocked)
-                ToolTip.text: isLocked? qsTr('Unlock track') : qsTr('Lock track')
+                ToolTip {
+                    visible: parent.hovered
+                    delay: 1000
+                    timeout: 5000
+                    text: isLocked? qsTr('Unlock track') : qsTr('Lock track')
+                }
             }
         }
     }

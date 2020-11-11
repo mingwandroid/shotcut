@@ -41,9 +41,15 @@ ToolBar {
             id: menuButton
             implicitWidth: settings.smallIcons? 18 : hiddenButton.implicitWidth
             implicitHeight: implicitWidth
+            hoverEnabled: true
+            ToolTip {
+                visible: parent.hovered
+                delay: 1000
+                timeout: 5000
+                text: qsTr('Display a menu of additional actions')
+            }
             action: Action {
                 id: menuAction
-                ToolTip.text: qsTr('Display a menu of additional actions')
                 icon.name: 'show-menu'
                 icon.source: 'qrc:///icons/oxygen/32x32/actions/show-menu.png'
                 onTriggered: menu.popup(menuButton.width / 2, toolBarRoot.height / 2)
@@ -57,8 +63,14 @@ ToolBar {
         ToolButton {
             implicitWidth: settings.smallIcons? 18 : hiddenButton.implicitWidth
             implicitHeight: implicitWidth
+            hoverEnabled: true
+            ToolTip {
+                visible: parent.hovered
+                delay: 1000
+                timeout: 5000
+                text: qsTr('Set the filter start')
+            }
             action: Action {
-                ToolTip.text: qsTr('Set the filter start')
                 text: '['
                 onTriggered: filter.in = producer.position + producer.in
             }
@@ -66,8 +78,14 @@ ToolBar {
         ToolButton {
             implicitWidth: settings.smallIcons? 18 : hiddenButton.implicitWidth
             implicitHeight: implicitWidth
+            hoverEnabled: true
+            ToolTip {
+                visible: parent.hovered
+                delay: 1000
+                timeout: 5000
+                text: qsTr('Set the filter end')
+            }
             action: Action {
-                ToolTip.text: qsTr('Set the filter end')
                 text: ']'
                 onTriggered: filter.out = producer.position + producer.in
             }
@@ -75,8 +93,14 @@ ToolBar {
         ToolButton {
             implicitWidth: settings.smallIcons? 18 : hiddenButton.implicitWidth
             implicitHeight: implicitWidth
+            hoverEnabled: true
+            ToolTip {
+                visible: parent.hovered
+                delay: 1000
+                timeout: 5000
+                text: qsTr('Set the first simple keyframe')
+            }
             action: Action {
-                ToolTip.text: qsTr('Set the first simple keyframe')
                 text: '{'
                 onTriggered: filter.animateIn = producer.position + producer.in - filter.in
             }
@@ -84,8 +108,14 @@ ToolBar {
         ToolButton {
             implicitWidth: settings.smallIcons? 18 : hiddenButton.implicitWidth
             implicitHeight: implicitWidth
+            hoverEnabled: true
+            ToolTip {
+                visible: parent.hovered
+                delay: 1000
+                timeout: 5000
+                text: qsTr('Set the second simple keyframe')
+            }
             action: Action {
-                ToolTip.text: qsTr('Set the second simple keyframe')
                 text: '}'
                 onTriggered: filter.animateOut = filter.out - (producer.position + producer.in)
             }
@@ -98,9 +128,15 @@ ToolBar {
         ToolButton {
             implicitWidth: settings.smallIcons? 18 : hiddenButton.implicitWidth
             implicitHeight: implicitWidth
+            hoverEnabled: true
+            ToolTip {
+                visible: parent.hovered
+                delay: 1000
+                timeout: 5000
+                text: qsTr("Zoom keyframes out (Alt+-)")
+            }
             action: Action {
                 id: zoomOutAction
-                ToolTip.text: qsTr("Zoom keyframes out (Alt+-)")
                 icon.name: 'zoom-out'
                 icon.source: 'qrc:///icons/oxygen/32x32/actions/zoom-out.png'
                 onTriggered: root.zoomOut()
@@ -112,9 +148,15 @@ ToolBar {
         ToolButton {
             implicitWidth: settings.smallIcons? 18 : hiddenButton.implicitWidth
             implicitHeight: implicitWidth
+            hoverEnabled: true
+            ToolTip {
+                visible: parent.hovered
+                delay: 1000
+                timeout: 5000
+                text: qsTr("Zoom keyframes in (Alt++)")
+            }
             action: Action {
                 id: zoomInAction
-                ToolTip.text: qsTr("Zoom keyframes in (Alt++)")
                 icon.name: 'zoom-in'
                 icon.source: 'qrc:///icons/oxygen/32x32/actions/zoom-in.png'
                 onTriggered: root.zoomIn()
@@ -123,9 +165,15 @@ ToolBar {
         ToolButton {
             implicitWidth: settings.smallIcons? 18 : hiddenButton.implicitWidth
             implicitHeight: implicitWidth
+            hoverEnabled: true
+            ToolTip {
+                visible: parent.hovered
+                delay: 1000
+                timeout: 5000
+                text: qsTr('Zoom keyframes to fit (Alt+0)')
+            }
             action: Action {
                 id: zoomFitAction
-                ToolTip.text: qsTr('Zoom keyframes to fit (Alt+0)')
                 icon.name: 'zoom-fit-best'
                 icon.source: 'qrc:///icons/oxygen/32x32/actions/zoom-fit-best.png'
                 onTriggered: root.zoomToFit()

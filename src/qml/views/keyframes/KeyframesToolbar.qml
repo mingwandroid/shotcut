@@ -16,8 +16,8 @@
  */
 
 import QtQuick 2.2
-import QtQuick.Controls 1.3
-import QtQuick.Layouts 1.0
+import QtQuick.Controls 2.12
+import QtQuick.Layouts 1.2
 
 ToolBar {
     property alias scaleSlider: scaleSlider
@@ -26,13 +26,16 @@ ToolBar {
 
     id: toolBarRoot
     width: 200
-    height: settings.smallIcons? 28 : menuButton.height + 4
-    anchors.margins: 0
+    height: settings.smallIcons? 28 : hiddenButton.implicitHeight + 4
 
     RowLayout {
+        y: 2
+
         ToolButton {
             id: hiddenButton
             visible: false
+            implicitWidth: 32
+            implicitHeight: 32
         }
         ToolButton {
             id: menuButton
@@ -40,10 +43,10 @@ ToolBar {
             implicitHeight: implicitWidth
             action: Action {
                 id: menuAction
-                tooltip: qsTr('Display a menu of additional actions')
-                iconName: 'show-menu'
-                iconSource: 'qrc:///icons/oxygen/32x32/actions/show-menu.png'
-                onTriggered: menu.show(menuButton.width / 2, toolBarRoot.height / 2)
+                ToolTip.text: qsTr('Display a menu of additional actions')
+                icon.name: 'show-menu'
+                icon.source: 'qrc:///icons/oxygen/32x32/actions/show-menu.png'
+                onTriggered: menu.popup(menuButton.width / 2, toolBarRoot.height / 2)
             }
         }
         Button { // separator
@@ -55,7 +58,7 @@ ToolBar {
             implicitWidth: settings.smallIcons? 18 : hiddenButton.implicitWidth
             implicitHeight: implicitWidth
             action: Action {
-                tooltip: qsTr('Set the filter start')
+                ToolTip.text: qsTr('Set the filter start')
                 text: '['
                 onTriggered: filter.in = producer.position + producer.in
             }
@@ -64,7 +67,7 @@ ToolBar {
             implicitWidth: settings.smallIcons? 18 : hiddenButton.implicitWidth
             implicitHeight: implicitWidth
             action: Action {
-                tooltip: qsTr('Set the filter end')
+                ToolTip.text: qsTr('Set the filter end')
                 text: ']'
                 onTriggered: filter.out = producer.position + producer.in
             }
@@ -73,7 +76,7 @@ ToolBar {
             implicitWidth: settings.smallIcons? 18 : hiddenButton.implicitWidth
             implicitHeight: implicitWidth
             action: Action {
-                tooltip: qsTr('Set the first simple keyframe')
+                ToolTip.text: qsTr('Set the first simple keyframe')
                 text: '{'
                 onTriggered: filter.animateIn = producer.position + producer.in - filter.in
             }
@@ -82,7 +85,7 @@ ToolBar {
             implicitWidth: settings.smallIcons? 18 : hiddenButton.implicitWidth
             implicitHeight: implicitWidth
             action: Action {
-                tooltip: qsTr('Set the second simple keyframe')
+                ToolTip.text: qsTr('Set the second simple keyframe')
                 text: '}'
                 onTriggered: filter.animateOut = filter.out - (producer.position + producer.in)
             }
@@ -97,9 +100,9 @@ ToolBar {
             implicitHeight: implicitWidth
             action: Action {
                 id: zoomOutAction
-                tooltip: qsTr("Zoom keyframes out (Alt+-)")
-                iconName: 'zoom-out'
-                iconSource: 'qrc:///icons/oxygen/32x32/actions/zoom-out.png'
+                ToolTip.text: qsTr("Zoom keyframes out (Alt+-)")
+                icon.name: 'zoom-out'
+                icon.source: 'qrc:///icons/oxygen/32x32/actions/zoom-out.png'
                 onTriggered: root.zoomOut()
             }
         }
@@ -111,9 +114,9 @@ ToolBar {
             implicitHeight: implicitWidth
             action: Action {
                 id: zoomInAction
-                tooltip: qsTr("Zoom keyframes in (Alt++)")
-                iconName: 'zoom-in'
-                iconSource: 'qrc:///icons/oxygen/32x32/actions/zoom-in.png'
+                ToolTip.text: qsTr("Zoom keyframes in (Alt++)")
+                icon.name: 'zoom-in'
+                icon.source: 'qrc:///icons/oxygen/32x32/actions/zoom-in.png'
                 onTriggered: root.zoomIn()
             }
         }
@@ -122,9 +125,9 @@ ToolBar {
             implicitHeight: implicitWidth
             action: Action {
                 id: zoomFitAction
-                tooltip: qsTr('Zoom keyframes to fit (Alt+0)')
-                iconName: 'zoom-fit-best'
-                iconSource: 'qrc:///icons/oxygen/32x32/actions/zoom-fit-best.png'
+                ToolTip.text: qsTr('Zoom keyframes to fit (Alt+0)')
+                icon.name: 'zoom-fit-best'
+                icon.source: 'qrc:///icons/oxygen/32x32/actions/zoom-fit-best.png'
                 onTriggered: root.zoomToFit()
             }
         }

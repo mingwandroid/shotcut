@@ -23,19 +23,19 @@ function scrollIfNeeded(center) {
     var x = producer.position * timeScale;
     if (!scrollView) return;
     if (settings.timelineCenterPlayhead || center) {
-        if (x > scrollView.flickableItem.contentX + scrollView.width * 0.5)
-            scrollView.flickableItem.contentX = x - scrollView.width * 0.5;
+        if (x > scrollViewFlickable.contentX + scrollView.width * 0.5)
+            scrollViewFlickable.contentX = x - scrollView.width * 0.5;
         else if (x < scrollView.width * 0.5)
-            scrollView.flickableItem.contentX = 0;
-        else if (x < scrollView.flickableItem.contentX + scrollView.width * 0.5)
-            scrollView.flickableItem.contentX = x - scrollView.width * 0.5;
+            scrollViewFlickable.contentX = 0;
+        else if (x < scrollViewFlickable.contentX + scrollView.width * 0.5)
+            scrollViewFlickable.contentX = x - scrollView.width * 0.5;
     } else {
-        if (x > scrollView.flickableItem.contentX + scrollView.width - 50)
-            scrollView.flickableItem.contentX = x - scrollView.width + 50;
+        if (x > scrollViewFlickable.contentX + scrollView.width - 50)
+            scrollViewFlickable.contentX = x - scrollView.width + 50;
         else if (x < 50)
-            scrollView.flickableItem.contentX = 0;
-        else if (x < scrollView.flickableItem.contentX + 50)
-            scrollView.flickableItem.contentX = x - 50;
+            scrollViewFlickable.contentX = 0;
+        else if (x < scrollViewFlickable.contentX + 50)
+            scrollViewFlickable.contentX = x - 50;
     }
 }
 
@@ -74,8 +74,8 @@ function clamp(x, minimum, maximum) {
 }
 
 function scrollMax() {
-    var maxWidth = Math.max(scrollView.flickableItem.contentWidth - scrollView.width + 14, 0)
-    var maxHeight = Math.max(scrollView.flickableItem.contentHeight - scrollView.height + 14, 0)
+    var maxWidth = Math.max(scrollViewFlickable.contentWidth - scrollView.width + 14, 0)
+    var maxHeight = Math.max(scrollViewFlickable.contentHeight - scrollView.height + 14, 0)
     return Qt.point(maxWidth, maxHeight)
 }
 
@@ -97,16 +97,16 @@ function onMouseWheel(wheel) {
             var y = wheel.pixelDelta.y
             // Track pads provide both horizontal and vertical.
             if (!y || Math.abs(x) > 2)
-                scrollView.flickableItem.contentX = clamp(scrollView.flickableItem.contentX - x, 0, scrollMax().x)
-            scrollView.flickableItem.contentY = clamp(scrollView.flickableItem.contentY - y, 0, scrollMax().y)
+                scrollViewFlickable.contentX = clamp(scrollViewFlickable.contentX - x, 0, scrollMax().x)
+            scrollViewFlickable.contentY = clamp(scrollViewFlickable.contentY - y, 0, scrollMax().y)
         } else {
             // Vertical only mouse wheel requires modifier for vertical scroll.
             if (wheel.modifiers === Qt.AltModifier) {
                 n = Math.round((application.OS === 'OS X'? wheel.angleDelta.y : wheel.angleDelta.x) / 2)
-                scrollView.flickableItem.contentY = clamp(scrollView.flickableItem.contentY - n, 0, scrollMax().y)
+                scrollViewFlickable.contentY = clamp(scrollViewFlickable.contentY - n, 0, scrollMax().y)
             } else {
                 n = Math.round(wheel.angleDelta.y / 2)
-                scrollView.flickableItem.contentX = clamp(scrollView.flickableItem.contentX - n, 0, scrollMax().x)
+                scrollViewFlickable.contentX = clamp(scrollViewFlickable.contentX - n, 0, scrollMax().x)
             }
         }
     }

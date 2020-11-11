@@ -17,7 +17,7 @@
 
 import QtQuick 2.0
 import org.shotcut.qml 1.0
-import QtQuick.Controls 1.0
+import QtQuick.Controls 2.12
 import Shotcut.Controls 1.0
 import QtQuick.Window 2.2
 import 'Keyframes.js' as Logic
@@ -103,6 +103,5 @@ Rectangle {
     ToolTip {
         id: tooltip
         text: name
-        cursorShape: Qt.PointingHandCursor
     }
 }

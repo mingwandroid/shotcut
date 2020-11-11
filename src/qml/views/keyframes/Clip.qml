@@ -16,9 +16,7 @@
  */
 
 import QtQuick 2.2
-import QtQuick.Controls 1.0
 import Shotcut.Controls 1.0 as Shotcut
-import QtQuick.Layouts 1.1
 import QtGraphicalEffects 1.0
 import QtQml.Models 2.2
 import QtQuick.Window 2.2
@@ -51,7 +49,6 @@ Rectangle {
     signal trimmedIn(var clip)
     signal trimmingOut(var clip, real delta, var mouse)
     signal trimmedOut(var clip)
-    signal otherClicked()
 
     SystemPalette { id: activePalette }
     gradient: Gradient {
@@ -236,9 +233,7 @@ Rectangle {
         onClicked: {
             if (mouse.button === Qt.RightButton) {
                 var mapped = mapToItem(root, mouse.x, mouse.y)
-                clipMenu.visible? clipMenu.hide() : clipMenu.show(mapped.x, mapped.y)
-            } else {
-                clipRoot.otherClicked()
+                clipMenu.popup(mapped.x, mapped.y)
             }
         }
     }
@@ -286,7 +281,6 @@ Rectangle {
                 startX = parent.x
                 startFadeIn = animateIn
                 parent.anchors.left = undefined
-                clipRoot.otherClicked()
             }
             onReleased: {
                 root.stopScrolling = false
@@ -367,7 +361,6 @@ Rectangle {
                 startX = parent.x
                 startFadeOut = animateOut
                 parent.anchors.right = undefined
-                clipRoot.otherClicked()
             }
             onReleased: {
                 root.stopScrolling = false
@@ -432,7 +425,6 @@ Rectangle {
                 startX = mapToItem(null, x, y).x
                 originalX = 0 // reusing originalX to accumulate delta for bubble help
                 parent.anchors.left = undefined
-                clipRoot.otherClicked()
             }
             onReleased: {
                 root.stopScrolling = false
@@ -480,7 +472,6 @@ Rectangle {
                 duration = clipDuration
                 originalX = 0 // reusing originalX to accumulate delta for bubble help
                 parent.anchors.right = undefined
-                clipRoot.otherClicked()
             }
             onReleased: {
                 root.stopScrolling = false

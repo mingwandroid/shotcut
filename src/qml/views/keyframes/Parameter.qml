@@ -128,7 +128,7 @@ Item {
                     keyframeMenu.index = index
                     keyframeMenu.interpolation = interpolation
                     var mapped = mapToItem(root, mouse.x, mouse.y)
-                    keyframeMenu.visible? keyframeMenu.hide() : keyframeMenu.show(mapped.x, mapped.y)
+                    keyframeMenu.popup(mapped.x, mapped.y)
                 }
             }
             onInterpolationChanged: canvas.requestPaint()

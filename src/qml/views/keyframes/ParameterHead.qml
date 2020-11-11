@@ -16,9 +16,8 @@
  */
 
 import QtQuick 2.0
-import QtQuick.Controls 1.0
-import QtQuick.Controls.Styles 1.0
-import QtQuick.Layouts 1.0
+import QtQuick.Controls 2.12
+import QtQuick.Layouts 1.2
 import Shotcut.Controls 1.0 as Shotcut
 import 'Keyframes.js' as Logic
 
@@ -78,7 +77,7 @@ Rectangle {
             parent.clicked()
             if (mouse.button === Qt.RightButton) {
                 var mapped = mapToItem(root, mouse.x, mouse.y)
-                menu.show(mapped.x, mapped.y)
+                menu.popup(mapped.x, mapped.y)
             }
         }
     }
@@ -105,10 +104,10 @@ Rectangle {
             spacing: 8
             ToolButton {
                 id: previousButton
-                implicitWidth: 18
-                implicitHeight: 18
-                iconName: 'media-skip-backward'
-                iconSource: 'qrc:///icons/oxygen/32x32/actions/media-skip-backward.png'
+                implicitWidth: 24
+                implicitHeight: 24
+                icon.name: 'media-skip-backward'
+                icon.source: 'qrc:///icons/oxygen/32x32/actions/media-skip-backward.png'
                 onClicked: {
                     if (delegateIndex >= 0) {
                         root.currentTrack = delegateIndex
@@ -117,55 +116,55 @@ Rectangle {
                         Logic.seekPreviousSimple()
                     }
                 }
-                tooltip: (delegateIndex >= 0) ? qsTr('Seek to previous keyframe') : qsTr('Seek backwards')
+                ToolTip.text: (delegateIndex >= 0) ? qsTr('Seek to previous keyframe') : qsTr('Seek backwards')
             }
 
             ToolButton {
                 id: addButton
                 visible: delegateIndex >= 0
-                implicitWidth: 18
-                implicitHeight: 18
-                iconName: 'chronometer';
-                iconSource: 'qrc:///icons/oxygen/32x32/actions/chronometer.png'
+                implicitWidth: 24
+                implicitHeight: 24
+                icon.name: 'chronometer';
+                icon.source: 'qrc:///icons/oxygen/32x32/actions/chronometer.png'
                 onClicked: {
                     parameters.addKeyframe(delegateIndex, producer.position - (filter.in - producer.in))
                     root.selection = [parameters.keyframeIndex(delegateIndex, producer.position)]
                 }
-                tooltip: qsTr('Add a keyframe at play head')
+                ToolTip.text: qsTr('Add a keyframe at play head')
             }
             Item {
                 visible: delegateIndex < 0 && paramHeadRoot.height >= 30
-                width: 18
-                height: 18
+                width: 24
+                height: 24
             }
 
             ToolButton {
                 id: deleteButton
                 visible: delegateIndex >= 0
                 enabled: delegateIndex === root.currentTrack && root.selection.length > 0
-                implicitWidth: 18
-                implicitHeight: 18
-                iconName: 'edit-delete'
-                iconSource: 'qrc:///icons/oxygen/32x32/actions/edit-delete.png'
+                implicitWidth: 24
+                implicitHeight: 24
+                icon.name: 'edit-delete'
+                icon.source: 'qrc:///icons/oxygen/32x32/actions/edit-delete.png'
                 opacity: enabled? 1.0 : 0.5
                 onClicked: {
                     parameters.remove(delegateIndex, root.selection[0])
                     root.selection = []
                 }
-                tooltip: qsTr('Delete the selected keyframe')
+                ToolTip.text: qsTr('Delete the selected keyframe')
             }
             Item {
                 visible: delegateIndex < 0 && paramHeadRoot.height >= 30
-                width: 18
-                height: 18
+                width: 24
+                height: 24
             }
 
             ToolButton {
                 id: nextButton
-                implicitWidth: 18
-                implicitHeight: 18
-                iconName: 'media-skip-forward'
-                iconSource: 'qrc:///icons/oxygen/32x32/actions/media-skip-forward.png'
+                implicitWidth: 24
+                implicitHeight: 24
+                icon.name: 'media-skip-forward'
+                icon.source: 'qrc:///icons/oxygen/32x32/actions/media-skip-forward.png'
                 onClicked: {
                     if (delegateIndex >= 0) {
                         root.currentTrack = delegateIndex
@@ -174,18 +173,18 @@ Rectangle {
                         Logic.seekNextSimple()
                     }
                 }
-                tooltip: (delegateIndex >= 0) ? qsTr('Seek to next keyframe') : qsTr('Seek forwards')
+                ToolTip.text: (delegateIndex >= 0) ? qsTr('Seek to next keyframe') : qsTr('Seek forwards')
             }
 
             ToolButton {
                 id: lockButton
                 visible: false && delegateIndex >= 0
-                implicitWidth: 18
-                implicitHeight: 18
-                iconName: isLocked ? 'object-locked' : 'object-unlocked'
-                iconSource: isLocked ? 'qrc:///icons/oxygen/32x32/status/object-locked.png' : 'qrc:///icons/oxygen/32x32/status/object-unlocked.png'
+                implicitWidth: 24
+                implicitHeight: 24
+                icon.name: isLocked ? 'object-locked' : 'object-unlocked'
+                icon.source: isLocked ? 'qrc:///icons/oxygen/32x32/status/object-locked.png' : 'qrc:///icons/oxygen/32x32/status/object-unlocked.png'
 //                onClicked: timeline.setTrackLock(index, !isLocked)
-                tooltip: isLocked? qsTr('Unlock track') : qsTr('Lock track')
+                ToolTip.text: isLocked? qsTr('Unlock track') : qsTr('Lock track')
             }
         }
     }

@@ -138,10 +138,10 @@ Rectangle {
                 inPoint: Math.round((clipRoot.inPoint + index * waveform.maxWidth / timeScale) * speed) * channels
                 outPoint: inPoint + Math.round(width / timeScale * speed) * channels
                 levels: audioLevels
-                active: ((clipRoot.x + x + width)   > scrollView.flickableItem.contentX) && // right edge
-                        ((clipRoot.x + x)           < scrollView.flickableItem.contentX + scrollView.width) && // left edge
-                        ((trackRoot.y + y + height) > scrollView.flickableItem.contentY) && // bottom edge
-                        ((trackRoot.y + y)          < scrollView.flickableItem.contentY + scrollView.height) // top edge
+                active: ((clipRoot.x + x + width)   > scrollViewFlickable.contentX) && // right edge
+                        ((clipRoot.x + x)           < scrollViewFlickable.contentX + scrollView.width) && // left edge
+                        ((trackRoot.y + y + height) > scrollViewFlickable.contentY) && // bottom edge
+                        ((trackRoot.y + y)          < scrollViewFlickable.contentY + scrollView.height) // top edge
             }
         }
     }

@@ -35,8 +35,8 @@ Rectangle {
             width: 1
             color: activePalette.windowText
             x: index * intervalSeconds * profile.fps * timeScale
-            visible: ((x + width)   > scrollView.flickableItem.contentX) && // right edge
-                      (x            < scrollView.flickableItem.contentX + scrollView.width) // left edge
+            visible: ((x + width)   > scrollViewFlickable.contentX) && // right edge
+                      (x            < scrollViewFlickable.contentX + scrollView.width) // left edge
 
             Label {
                 anchors.left: parent.right

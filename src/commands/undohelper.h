@@ -24,6 +24,7 @@
 #include <QMap>
 #include <QList>
 #include <QSet>
+#include <QUuid>
 
 class UndoHelper
 {
